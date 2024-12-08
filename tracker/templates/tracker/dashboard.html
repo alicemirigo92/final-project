@@ -1,0 +1,35 @@
+<h1>Dashboard</h1>
+<p>Total Emissions: {{ total_emissions }} kg CO2e</p>
+
+<h3>Your Activities</h3>
+<ul>
+  {% for activity in activities %}
+    <li>{{ activity.activity_type }}: {{ activity.value }} kg CO2e</li>
+  {% endfor %}
+</ul>
+
+<canvas id="progressChart" width="400" height="200"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('progressChart').getContext('2d');
+  const progressChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: JSON.parse('{{ activity_types|escapejs }}'), // Activity types from backend
+      datasets: [{
+        label: 'Emissions (kg CO2e)',
+        data: JSON.parse('{{ activity_totals|escapejs }}'), // Total emissions per activity type
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>

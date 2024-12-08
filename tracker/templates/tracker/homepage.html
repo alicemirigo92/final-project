@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homepage</title>
+    {% load static %} <!-- Load the static template tag -->
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+</head>
+<body>
+    <h1>Welcome to the EcoTrack</h1>
+    <h2>Activities</h2>
+    <ul>
+        {% for activity in activities %}
+        <li>{{ activity.activity_type }}: {{ activity.value }} {{ activity.unit }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Badges</h2>
+    <ul>
+        {% for badge in badges %}
+        <li>{{ badge.name }}: {{ badge.description }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

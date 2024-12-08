@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculate Emissions</title>
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+</head>
+<body>
+    <h1>Calculate Emissions</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Activity Type:</label>
+        <input type="text" name="activity_type" required>
+        <label>Value:</label>
+        <input type="number" step="0.01" name="value" required>
+        <label>Unit:</label>
+        <input type="text" name="unit" required>
+        <button type="submit">Calculate</button>
+    </form>
+    {% if data %}
+    <h2>Emission Results</h2>
+    <pre>{{ data }}</pre>
+    {% endif %}
+    <a href="{% url 'homepage' %}">Back to Homepage</a>
+</body>
+</html>
