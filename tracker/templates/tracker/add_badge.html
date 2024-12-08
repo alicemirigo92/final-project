@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Badge</title>
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
 </head>
 <body>
-    <h1>Add a New Badge</h1>
-    <form method="POST">
+    <h1>Add a Badge</h1>
+    <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Add Badge</button>
     </form>
-    <a href="{% url 'homepage' %}">Back to Homepage</a>
 </body>
 </html>

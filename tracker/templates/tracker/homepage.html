@@ -1,23 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
-    {% load static %} <!-- Load the static template tag -->
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
 </head>
 <body>
-    <h1>Welcome to the EcoTrack</h1>
-    <h2>Activities</h2>
-    <ul>
-        {% for activity in activities %}
-        <li>{{ activity.activity_type }}: {{ activity.value }} {{ activity.unit }}</li>
-        {% endfor %}
-    </ul>
-    <h2>Badges</h2>
-    <ul>
-        {% for badge in badges %}
-        <li>{{ badge.name }}: {{ badge.description }}</li>
-        {% endfor %}
-    </ul>
+    <header>
+        <h1>Welcome to EcoTrack</h1>
+        <p>Track your environmental impact with ease</p>
+    </header>
+    <div class="container">
+        <h2>Activities</h2>
+        <ul>
+            {% for activity in activities %}
+            <li><strong>{{ activity.activity_type }}:</strong> {{ activity.value }} {{ activity.unit }}</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'add_activity' %}" class="button">Add Activity</a>
+
+        <h2>Badges</h2>
+        <ul>
+            {% for badge in badges %}
+            <li><strong>{{ badge.name }}:</strong> {{ badge.description }}</li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'add_badge' %}" class="button">Add Badge</a>
+
+        <h2>Insights</h2>
+        <a href="{% url 'insights' %}" class="button">View Insights</a>
+    </div>
 </body>
 </html>

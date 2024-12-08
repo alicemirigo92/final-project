@@ -1,67 +1,84 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .models import Activity, Badge
 from .forms import ActivityForm, BadgeForm
 
-
-# View for displaying the homepage in HTML
+@login_required
 def homepage_html(request):
-    activities = Activity.objects.all()
-    badges = Badge.objects.all()
+    """
+    Render the homepage with activities and badges for the logged-in user.
+    """
+    activities = Activity.objects.filter(user=request.user)
+    badges = Badge.objects.filter(user=request.user)
     context = {
         'activities': activities,
         'badges': badges,
     }
     return render(request, 'tracker/homepage.html', context)
 
+def check_for_badges(user):
+    """
+    Check if the user qualifies for new badges based on activities.
+    """
+    # Example badge: "First Step"
+    if not Badge.objects.filter(user=user, name="First Step").exists():
+        if Activity.objects.filter(user=user).exists():
+            Badge.objects.create(
+                user=user,
+                name="First Step",
+                description="Congratulations! You've logged your first activity."
+            )
 
-# API endpoint for homepage (JSON response)
-def homepage_api(request):
-    activities = list(Activity.objects.values())
-    badges = list(Badge.objects.values())
-    response_data = {
-        'activities': activities,
-        'badges': badges,
-    }
-    return JsonResponse(response_data)
+    # Example badge: "Water Saver"
+    if Activity.objects.filter(user=user, activity_type="water").count() >= 5:
+        if not Badge.objects.filter(user=user, name="Water Saver").exists():
+            Badge.objects.create(
+                user=user,
+                name="Water Saver",
+                description="Great! You've logged activities related to water usage."
+            )
 
-
-# View to add a new activity
+@login_required
 def add_activity(request):
+    """
+    Allow the user to add a new activity.
+    """
     if request.method == 'POST':
         form = ActivityForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('homepage_html')
+            activity = form.save(commit=False)
+            activity.user = request.user
+            activity.save()
+            check_for_badges(request.user)  # Check for badges
+            return redirect('homepage')
     else:
         form = ActivityForm()
     return render(request, 'tracker/add_activity.html', {'form': form})
 
-
-# View to add a new badge
+@login_required
 def add_badge(request):
+    """
+    Allow admins to manually add a badge for a user.
+    """
     if request.method == 'POST':
         form = BadgeForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('homepage_html')
+            badge = form.save(commit=False)
+            badge.user = request.user
+            badge.save()
+            return redirect('homepage')
     else:
         form = BadgeForm()
     return render(request, 'tracker/add_badge.html', {'form': form})
 
-
-# View to calculate emissions (API integration)
-def calculate_emissions(request):
-    if request.method == 'POST':
-        activity_type = request.POST.get('activity_type')
-        value = request.POST.get('value')
-        unit = request.POST.get('unit')
-        # Replace with actual API call logic
-        api_result = {
-            "activity_type": activity_type,
-            "value": value,
-            "unit": unit,
-            "estimated_emission": "Mocked Data",
-        }
-        return JsonResponse(api_result)
-    return render(request, 'tracker/calculate_emissions.html')
+@login_required
+def insights(request):
+    """
+    Show insights about the user's activities and badges.
+    """
+    activities = Activity.objects.filter(user=request.user)
+    badges = Badge.objects.filter(user=request.user)
+    return render(request, 'tracker/insights.html', {
+        'activities': activities,
+        'badges': badges,
+    })

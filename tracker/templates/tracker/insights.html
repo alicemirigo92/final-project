@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>Insights</title>
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+</head>
+<body>
+    <h1>Insights</h1>
+
+    <h2>Your Activity Summary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Activity Type</th>
+                <th>Value</th>
+                <th>Unit</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if activities %}
+                {% for activity in activities %}
+                <tr>
+                    <td>{{ activity.activity_type }}</td>
+                    <td>{{ activity.value }}</td>
+                    <td>{{ activity.unit }}</td>
+                    <td>{{ activity.date }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4">No activities logged yet.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <h2>Badges Earned</h2>
+    <ul>
+        {% if badges %}
+            {% for badge in badges %}
+            <li>{{ badge.name }}: {{ badge.description }}</li>
+            {% endfor %}
+        {% else %}
+            <li>No badges earned yet.</li>
+        {% endif %}
+    </ul>
+
+    <h2>Recommendations</h2>
+    <p>Based on your activities, consider these tips:</p>
+    <ul>
+        <li>Reduce transportation emissions by carpooling or using public transport.</li>
+        <li>Conserve water by fixing leaks and using water-saving devices.</li>
+    </ul>
+</body>
+</html>

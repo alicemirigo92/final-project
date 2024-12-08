@@ -1,16 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Activity</title>
     <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
 </head>
 <body>
-    <h1>Add a New Activity</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Activity</button>
-    </form>
-    <a href="{% url 'homepage' %}">Back to Homepage</a>
+    <header>
+        <h1>Add New Activity</h1>
+    </header>
+    <div class="container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+        <a href="{% url 'homepage' %}" class="button">Go Back</a>
+    </div>
 </body>
 </html>
